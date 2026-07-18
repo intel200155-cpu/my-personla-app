@@ -200,41 +200,52 @@
     </div>
 
     <script>
-        // typing effect
-        const phrases = [
-            'cat /dev/urandom',
-            'watching logs',
-            'breaking stuff',
-            'building something',
-            'debugging life'
-        ];
-        let idx = 0;
-        let charIdx = 0;
-        let isDeleting = false;
-        const el = document.getElementById('typing-text');
+      <script>
+    // typing effect
+    const phrases = [
+        'cat /dev/urandom',
+        'watching logs',
+        'breaking stuff',
+        'building something',
+        'debugging life'
+    ];
+    let idx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    const el = document.getElementById('typing-text');
 
-        function type() {
-            const current = phrases[idx];
-            if (isDeleting) {
-                el.textContent = current.substring(0, charIdx--);
-                if (charIdx < 0) {
-                    isDeleting = false;
-                    idx = (idx + 1) % phrases.length;
-                    setTimeout(type, 400);
-                    return;
-                }
-                setTimeout(type, 60);
-            } else {
-                el.textContent = current.substring(0, charIdx++);
-                if (charIdx > current.length) {
-                    isDeleting = true;
-                    setTimeout(type, 1500);
-                    return;
-                }
-                setTimeout(type, 100);
+    function type() {
+        const current = phrases[idx];
+        if (isDeleting) {
+            el.textContent = current.substring(0, charIdx--);
+            if (charIdx < 0) {
+                isDeleting = false;
+                idx = (idx + 1) % phrases.length;
+                setTimeout(type, 400);
+                return;
             }
+            setTimeout(type, 60);
+        } else {
+            el.textContent = current.substring(0, charIdx++);
+            if (charIdx > current.length) {
+                isDeleting = true;
+                setTimeout(type, 1500);
+                return;
+            }
+            setTimeout(type, 100);
         }
-        type();
+    }
+    type();
+
+    // ---- ANIMATED TAB TITLE ----
+    let titleText = "XRAYYOU8";
+    let spinChars = "|/-\\";
+    let spinIndex = 0;
+
+    setInterval(() => {
+        spinIndex = (spinIndex + 1) % spinChars.length;
+        document.title = spinChars[spinIndex] + " " + titleText + " " + spinChars[spinIndex];
+    }, 200);
     </script>
 
 </body>
