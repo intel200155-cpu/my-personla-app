@@ -1,213 +1,631 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>XRAYYOU8</title>
-    <style>
-        /* (keep your existing styles – unchanged) */
-        /* I'll include them all for completeness */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0d0d0d;
-            font-family: 'Courier New', monospace;
-            color: #ccc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 650px; width: 100%; }
-        .box {
-            background: rgba(20, 20, 35, 0.85);
-            backdrop-filter: blur(4px);
-            border: 1px solid #2a2a4a;
-            border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }
-        .big {
-            font-size: 28px;
-            font-weight: bold;
-            color: #eee;
-            animation: pulseText 2.5s ease-in-out infinite;
-        }
-        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        a { color: #66aacc; text-decoration: none; }
-        a:hover { color: #fff; text-decoration: underline; }
-        .tag {
-            display: inline-block;
-            border: 1px solid #444;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            margin-right: 4px;
-        }
-        .prompt { color: #66aacc; }
-        .comment { color: #556; }
-        .muted { color: #666; font-size: 13px; }
-        .inline-icon { height: 18px; width: auto; vertical-align: middle; margin-right: 6px; border-radius: 4px; }
-        .lang-icon { height: 20px; width: auto; vertical-align: middle; margin-right: 4px; }
-        .blink { animation: blink 1s step-start infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-        .type-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1em;
-            background: #66aacc;
-            animation: blink 1s step-start infinite;
-            vertical-align: text-bottom;
-            margin-left: 2px;
-        }
-        .footer marquee { display: block; color: #555; font-size: 13px; }
-        .comments { margin-top: 20px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XRAYYOU8 · Developer Portfolio</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React + ReactDOM + Babel Standalone -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Custom styles beyond Tailwind */
+    @layer base {
+      html { scroll-behavior: smooth; }
+      body {
+        background-color: #0B0F19;
+        color: #f0f4f8;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, .font-display { font-family: 'Space Grotesk', sans-serif; }
+    }
+    /* Glass effect */
+    .glass {
+      background: rgba(11, 15, 25, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #3B82F6, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    /* Card hover */
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6);
+      border-color: rgba(59,130,246,0.3);
+    }
+    /* Progress bar */
+    .progress-bar {
+      height: 6px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #3B82F6, #06B6D4);
+      transition: width 1s ease;
+    }
+    /* Floating animation */
+    .float {
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-delay-1 { animation-delay: 0s; }
+    .float-delay-2 { animation-delay: 1s; }
+    .float-delay-3 { animation-delay: 2s; }
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Timeline line */
+    .timeline-line {
+      position: relative;
+    }
+    .timeline-line::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #3B82F6, #06B6D4);
+      opacity: 0.3;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0B0F19; }
+    ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; }
+    /* Button ripple */
+    .btn-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s, opacity 0.6s;
+      opacity: 0;
+    }
+    .btn-ripple:active::after {
+      width: 300px;
+      height: 300px;
+      opacity: 1;
+      transition: 0s;
+    }
+  </style>
 </head>
 <body>
+  <div id="root"></div>
 
-    <div class="container">
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
 
-        <!-- Header -->
-        <div class="box">
-            <div class="big">⏤ XRAYYOU8 ⏤</div>
-            <div style="color:#888; margin-top:4px;">
-                scripter ·
-                <span class="lang-item">
-                    <img src="https://www.bing.com/th/id/OGC.e0f487b75402607ceb3245ce23a0dba0?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fcdnl.iconscout.com%2flottie%2fpremium%2fthumb%2fpython-logo-animation-download-in-lottie-json-gif-static-svg-file-formats--application-programming-software-computer-development-web-technologies-pack-logos-animations-9717098.gif&ehk=PB8PqcPJiWzqMXvvfEC5Fqso1OfF4qdqeAYWIW9aQJc%3d" class="lang-icon" alt="python"> Python
-                </span> ·
-                <span class="lang-item">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" class="lang-icon" alt="html"> HTML
-                </span> ·
-                <span class="lang-item">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" class="lang-icon" alt="js"> JS
-                </span> ·
-                <span class="lang-item">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg" class="lang-icon" alt="lua"> Lua
-                </span>
-                <span style="color:#555; font-size:12px; margin-left:4px;">// mostly lua</span>
+    // ─── DATA ──────────────────────────────────────────────
+    const techStackData = [
+      { name: 'HTML5', icon: 'fa-brands fa-html5', level: 85, years: 2, desc: 'Semantic markup, accessibility, SEO' },
+      { name: 'CSS3', icon: 'fa-brands fa-css3-alt', level: 80, years: 2, desc: 'Flexbox, Grid, animations, Tailwind' },
+      { name: 'JavaScript', icon: 'fa-brands fa-js', level: 75, years: 2, desc: 'ES6+, DOM manipulation, Fetch API' },
+      { name: 'TypeScript', icon: 'fa-solid fa-code', level: 60, years: 1, desc: 'Static typing, interfaces, generics' },
+      { name: 'React', icon: 'fa-brands fa-react', level: 70, years: 1.5, desc: 'Hooks, Context, Router, Vite' },
+      { name: 'Next.js', icon: 'fa-solid fa-n', level: 50, years: 0.5, desc: 'App Router, SSR, API routes' },
+      { name: 'Node.js', icon: 'fa-brands fa-node-js', level: 55, years: 1, desc: 'Express, REST APIs, middleware' },
+      { name: 'Express', icon: 'fa-solid fa-server', level: 50, years: 1, desc: 'Routing, middleware, error handling' },
+      { name: 'Tailwind CSS', icon: 'fa-solid fa-wind', level: 80, years: 1.5, desc: 'Utility-first, custom configs, dark mode' },
+      { name: 'Git', icon: 'fa-brands fa-git-alt', level: 75, years: 2, desc: 'Branching, merging, rebasing' },
+      { name: 'GitHub', icon: 'fa-brands fa-github', level: 70, years: 2, desc: 'PRs, Actions, Pages' },
+      { name: 'Docker', icon: 'fa-brands fa-docker', level: 40, years: 0.5, desc: 'Containers, Dockerfiles, compose' },
+      { name: 'Linux', icon: 'fa-brands fa-linux', level: 50, years: 1, desc: 'Command line, bash, server basics' },
+      { name: 'MongoDB', icon: 'fa-solid fa-database', level: 45, years: 0.5, desc: 'NoSQL, Mongoose, aggregation' },
+      { name: 'PostgreSQL', icon: 'fa-solid fa-database', level: 35, years: 0.5, desc: 'SQL, relationships, indexes' },
+      { name: 'Firebase', icon: 'fa-solid fa-fire', level: 55, years: 1, desc: 'Auth, Firestore, hosting' },
+      { name: 'Vercel', icon: 'fa-solid fa-cloud', level: 60, years: 1, desc: 'Deploy, preview, environment variables' },
+      { name: 'Figma', icon: 'fa-brands fa-figma', level: 65, years: 1, desc: 'Design, prototypes, components' },
+      { name: 'VS Code', icon: 'fa-solid fa-code', level: 85, years: 2, desc: 'Extensions, snippets, debugging' },
+      { name: 'npm', icon: 'fa-brands fa-npm', level: 70, years: 2, desc: 'Packages, scripts, workspaces' },
+    ];
+
+    const skillsData = {
+      frontend: { label: 'Frontend', level: 80, color: '#3B82F6' },
+      backend: { label: 'Backend', level: 60, color: '#06B6D4' },
+      'UI/UX': { label: 'UI/UX', level: 70, color: '#8B5CF6' },
+      'Version Control': { label: 'Version Control', level: 85, color: '#F59E0B' },
+      Deployment: { label: 'Deployment', level: 75, color: '#10B981' },
+      'Responsive Design': { label: 'Responsive Design', level: 90, color: '#EC4899' },
+      'REST APIs': { label: 'REST APIs', level: 65, color: '#14B8A6' },
+      Authentication: { label: 'Authentication', level: 55, color: '#F472B6' },
+      'Database Design': { label: 'Database Design', level: 50, color: '#60A5FA' },
+      'Performance Optimization': { label: 'Performance Optimization', level: 60, color: '#FBBF24' },
+      Accessibility: { label: 'Accessibility', level: 70, color: '#34D399' },
+      Animations: { label: 'Animations', level: 75, color: '#818CF8' },
+    };
+
+    const projectsData = [
+      {
+        title: 'Delta Bypass',
+        desc: 'A fast tool to bypass Roblox link shorteners with a clean interface.',
+        tags: ['React', 'Tailwind', 'Node.js'],
+        status: 'Completed',
+        github: '#',
+        demo: '#',
+        image: '🚀' // placeholder
+      },
+      {
+        title: 'Info Stealer (Educational)',
+        desc: 'A learning project demonstrating data exfiltration techniques for security research.',
+        tags: ['Lua', 'Python', 'Discord Webhooks'],
+        status: 'In Progress',
+        github: '#',
+        demo: '#',
+        image: '🔒'
+      },
+      {
+        title: 'Personal Hub',
+        desc: 'A minimalist dashboard that aggregates my online presence and projects.',
+        tags: ['React', 'TypeScript', 'Tailwind'],
+        status: 'Completed',
+        github: '#',
+        demo: '#',
+        image: '🧩'
+      },
+    ];
+
+    const learningJourney = [
+      { year: '2024', title: 'Started Coding', desc: 'Began with HTML, CSS, and JavaScript.' },
+      { year: '2024', title: 'Built first projects', desc: 'Created static websites and small games.' },
+      { year: '2024', title: 'Discovered React', desc: 'Started learning React and modern frontend.' },
+      { year: '2024', title: 'Node.js & Backend', desc: 'Built my first REST API with Express.' },
+      { year: '2025', title: 'Databases & Deployment', desc: 'Learned MongoDB, PostgreSQL, and Vercel.' },
+      { year: '2025', title: 'TypeScript & Docker', desc: 'Adopted TypeScript and containerization.' },
+      { year: '2026', title: 'Current Focus', desc: 'Deepening React, Next.js, and full-stack.' },
+    ];
+
+    const workflowSteps = [
+      { icon: 'fa-regular fa-lightbulb', label: 'Idea' },
+      { icon: 'fa-regular fa-pen-to-square', label: 'Design' },
+      { icon: 'fa-regular fa-code', label: 'Code' },
+      { icon: 'fa-regular fa-flask', label: 'Test' },
+      { icon: 'fa-regular fa-rocket', label: 'Deploy' },
+      { icon: 'fa-regular fa-rotate-right', label: 'Improve' },
+    ];
+
+    // ─── COMPONENTS ──────────────────────────────────────────
+
+    // Navigation
+    const Navbar = () => {
+      const [scrolled, setScrolled] = useState(false);
+      useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+      return (
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass' : 'bg-transparent'}`}>
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" className="text-2xl font-display font-bold text-white">
+              XRAYYOU<span className="text-blue-400">8</span>
+            </a>
+            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+              <a href="#about" className="hover:text-blue-400 transition">About</a>
+              <a href="#skills" className="hover:text-blue-400 transition">Skills</a>
+              <a href="#projects" className="hover:text-blue-400 transition">Projects</a>
+              <a href="#tech-stack" className="hover:text-blue-400 transition">Tech Stack</a>
+              <a href="#learning" className="hover:text-blue-400 transition">Learning</a>
+              <a href="#contact" className="hover:text-blue-400 transition">Contact</a>
+              <a href="#" className="bg-blue-500 px-4 py-2 rounded-full text-white hover:bg-blue-600 transition">Resume</a>
             </div>
-            <div style="margin-top:8px;">
-                <span class="tag">#0033</span>
-                <span class="tag" style="margin-left:6px;">🌙</span>
-                <span class="tag" style="margin-left:6px;">⚡</span>
+            <button className="md:hidden text-white focus:outline-none" aria-label="Menu">
+              <i className="fa-solid fa-bars text-2xl"></i>
+            </button>
+          </div>
+        </nav>
+      );
+    };
+
+    // Hero
+    const Hero = () => {
+      return (
+        <section id="home" className="min-h-screen flex items-center pt-24 pb-16 relative overflow-hidden">
+          <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <p className="text-blue-400 font-medium tracking-wider text-sm">HI, I'M</p>
+              <h1 className="text-5xl md:text-7xl font-display font-bold leading-tight">
+                XRAYYOU<span className="gradient-text">8</span>
+              </h1>
+              <p className="text-xl text-gray-300 font-light">Frontend Developer &amp; Full‑Stack Learner</p>
+              <p className="text-gray-400 max-w-md text-lg leading-relaxed">
+                I'm a self‑taught developer with around two years of experience building websites and learning modern technologies. I enjoy solving problems, creating clean interfaces, and constantly improving my skills.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <a href="#projects" className="bg-blue-500 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-600 transition transform hover:scale-105">View Projects</a>
+                <a href="#contact" className="border border-gray-700 px-6 py-3 rounded-full font-medium hover:border-blue-400 hover:text-blue-400 transition">Get In Touch</a>
+                <a href="#" className="border border-gray-700 px-6 py-3 rounded-full font-medium hover:border-blue-400 hover:text-blue-400 transition">Download Resume</a>
+              </div>
             </div>
-            <div style="margin-top:10px; font-size:14px; color:#666;">
-                <span class="prompt">$</span> <span class="blink">▌</span> <span style="color:#66aacc;" id="typing-text"></span><span class="type-cursor"></span>
+            <div className="relative flex justify-center">
+              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center animate-pulse float">
+                <div className="text-center">
+                  <i className="fa-brands fa-react text-6xl text-cyan-400"></i>
+                  <i className="fa-brands fa-node-js text-5xl text-green-400 block mt-2"></i>
+                  <i className="fa-brands fa-github text-4xl text-gray-300 block mt-2"></i>
+                  <span className="text-xs text-gray-400 block mt-2">VS Code · Docker · Git</span>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        </section>
+      );
+    };
 
-        <!-- Links -->
-        <div class="box">
-            <div style="font-weight:bold; margin-bottom:6px;">// links</div>
-            <div style="line-height:2;">
-                <span class="prompt">></span>
-                <img src="https://www.bing.com/th/id/OGC.547D51674C3ABF1F124CB725992928559D21AA13?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmedia.tenor.com%2frLTHcGoEwfgAAAAM%2foctacat-github.gif&ehk=f7SiJ%2bhDut0fEvxeT813i%2bh6dKKOtftpOrZEGwLLMD4%3d" class="inline-icon" alt="github"> <a href="https://github.com/intel200155-cpu" target="_blank">github (kinda active)</a><br>
-                <span class="prompt">></span>
-                <img src="https://www.bing.com/th/id/OGC.547D51674C3ABF1F124CB725992928559D21AA13?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmedia.tenor.com%2frLTHcGoEwfgAAAAM%2foctacat-github.gif&ehk=f7SiJ%2bhDut0fEvxeT813i%2bh6dKKOtftpOrZEGwLLMD4%3d" class="inline-icon" alt="discord"> <a href="https://discord.com/users/nyxxxsm" target="_blank">discord (nyxxxsm)</a><br>
-                <span class="prompt">></span>
-                <img src="https://www.bing.com/th/id/OGC.2de0d2b671baa148f7e5c759bb4f6667?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmedia.tenor.com%2fWhj4rbZKrdcAAAAM%2froblos.gif&ehk=s1Yt%2fpt3Y6TsyxJA2QbXHSgO58Bf7fqE%2fD%2bf8W5xB9s%3d" class="inline-icon" alt="roblox"> <a href="https://www.roblox.com/users/10369140266/profile" target="_blank">roblox (XRAYYOU8)</a><br>
-                <span class="prompt">></span>
-                <img src="https://www.bing.com/th/id/OGC.547D51674C3ABF1F124CB725992928559D21AA13?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmedia.tenor.com%2frLTHcGoEwfgAAAAM%2foctacat-github.gif&ehk=f7SiJ%2bhDut0fEvxeT813i%2bh6dKKOtftpOrZEGwLLMD4%3d" class="inline-icon" alt="pastebin"> <a href="https://pastebin.com/u/intelthereal" target="_blank">pastebin (lua snippets)</a><br>
-                <span class="prompt">></span>
-                <img src="https://www.bing.com/th/id/OGC.9d098d0497a455c295ec25292b27b506?r=0&o=7&pid=1.7&rm=3&rurl=https%3a%2f%2fmedia.tenor.com%2fqO1MsYjgL7UAAAAM%2ftake-my-money-credit-card-meme.gif&ehk=WAADN57IltnZqIEwRH1mjBBdpcf3d4q%2fQDwOGw4GcgI%3d" class="inline-icon" alt="cashapp"> <a href="https://cash.app/$swagfi" target="_blank">cash app ($swagfi)</a> <span class="comment">// donations welcome</span>
+    // About
+    const About = () => {
+      return (
+        <section id="about" className="py-20 bg-[#0f1521]">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12 items-start">
+              <div className="space-y-4">
+                <p className="text-blue-400 text-sm font-medium tracking-wider">ABOUT ME</p>
+                <h2 className="text-3xl md:text-4xl font-display font-bold">Building things that <span className="gradient-text">actually matter</span></h2>
+                <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full"></div>
+                <p className="text-gray-300 leading-relaxed">
+                  I started coding two years ago when I discovered I could create anything with just a laptop and an internet connection. Since then, I've been obsessed with turning ideas into functional, beautiful web experiences.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  I enjoy the full process – from sketching wireframes to deploying live applications. Currently, I'm deepening my knowledge of TypeScript, Next.js, and backend architecture.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  My goal is to become a well‑rounded developer who can contribute to meaningful projects and continue learning every day.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#1a2233] p-6 rounded-2xl text-center card-hover">
+                  <p className="text-3xl font-bold gradient-text">2+</p>
+                  <p className="text-gray-400 text-sm">Years Coding</p>
+                </div>
+                <div className="bg-[#1a2233] p-6 rounded-2xl text-center card-hover">
+                  <p className="text-3xl font-bold gradient-text">20+</p>
+                  <p className="text-gray-400 text-sm">Projects</p>
+                </div>
+                <div className="bg-[#1a2233] p-6 rounded-2xl text-center card-hover">
+                  <p className="text-3xl font-bold gradient-text">1000+</p>
+                  <p className="text-gray-400 text-sm">Hours Learning</p>
+                </div>
+                <div className="bg-[#1a2233] p-6 rounded-2xl text-center card-hover">
+                  <p className="text-3xl font-bold gradient-text">∞</p>
+                  <p className="text-gray-400 text-sm">Always Learning</p>
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
+        </section>
+      );
+    };
 
-        <!-- Roblox -->
-        <div class="box">
-            <div style="font-weight:bold; margin-bottom:4px;">// roblox</div>
-            <div>XRAYYOU8 · id: 10369140266</div>
-            <div class="muted">account age: 180d · premium: false</div>
-            <div class="muted" style="margin-top:4px; color:#444;">// i swear i'm not 12</div>
-        </div>
-
-        <!-- Cash App -->
-        <div class="box">
-            <div style="font-weight:bold; margin-bottom:4px;">// cash app</div>
-            <div style="display:inline-block; border:1px solid #2a4a2a; padding:2px 16px; border-radius:20px; background:#111;">
-                $swagfi
+    // Tech Stack
+    const TechStack = () => {
+      return (
+        <section id="tech-stack" className="py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">TECH STACK</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">Tools I work with</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
             </div>
-            <div class="muted" style="margin-top:4px;">// if you're feeling generous</div>
-        </div>
-
-        <!-- Build Status -->
-        <div class="box" style="border-color:#2a2a3a;">
-            <div style="display:flex; justify-content:space-between;">
-                <span><span class="prompt">$</span> <span style="color:#66aacc;">./build.sh</span> <span style="color:#555; font-size:13px;">// again</span></span>
-                <span class="muted">2026</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {techStackData.map((tech, idx) => (
+                <div key={idx} className="bg-[#1a2233] p-5 rounded-2xl text-center card-hover border border-transparent transition-all">
+                  <i className={`${tech.icon} text-3xl text-blue-400`}></i>
+                  <h4 className="text-white font-medium mt-2 text-sm">{tech.name}</h4>
+                  <p className="text-gray-500 text-xs mt-1">{tech.years}+ yrs</p>
+                  <div className="w-full h-1 bg-gray-700 rounded-full mt-2 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full" style={{ width: `${tech.level}%` }}></div>
+                  </div>
+                  <p className="text-gray-400 text-xs mt-2">{tech.desc}</p>
+                </div>
+              ))}
             </div>
-            <div class="muted" style="margin-top:4px;">
-                <span class="comment">// todo: fix css, add more langs, sleep</span>
+          </div>
+        </section>
+      );
+    };
+
+    // Skills with progress bars
+    const Skills = () => {
+      return (
+        <section id="skills" className="py-20 bg-[#0f1521]">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">SKILLS</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">What I'm good at</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
             </div>
-        </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {Object.entries(skillsData).map(([key, skill]) => (
+                <div key={key} className="bg-[#1a2233] p-5 rounded-2xl">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-200">{skill.label}</span>
+                    <span className="text-blue-400 text-sm">{skill.level}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div className="fill" style={{ width: `${skill.level}%` }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
 
-        <!-- Footer -->
-        <div class="footer">
-            <marquee behavior="scroll" direction="left" scrollamount="3">
-                made by XRAYYOU8 · discord.gg/HzTjtX7Sy7 · if it breaks, it's a feature
-            </marquee>
-        </div>
+    // Projects
+    const Projects = () => {
+      return (
+        <section id="projects" className="py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">PROJECTS</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">Things I've built</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {projectsData.map((project, idx) => (
+                <div key={idx} className="bg-[#1a2233] rounded-2xl overflow-hidden card-hover border border-transparent">
+                  <div className="h-40 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center text-5xl">
+                    {project.image}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-display font-bold">{project.title}</h3>
+                    <p className="text-gray-400 text-sm mt-2">{project.desc}</p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {project.tags.map((tag, i) => (
+                        <span key={i} className="text-xs bg-[#2a3448] px-3 py-1 rounded-full text-blue-300">{tag}</span>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between mt-4">
+                      <span className={`text-xs font-medium px-3 py-1 rounded-full ${project.status === 'Completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                        {project.status}
+                      </span>
+                      <div className="flex gap-3">
+                        <a href={project.github} className="text-gray-400 hover:text-white transition"><i className="fa-brands fa-github"></i></a>
+                        <a href={project.demo} className="text-gray-400 hover:text-white transition"><i className="fa-solid fa-arrow-up-right-from-square"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
 
-        <!-- ========== COMMENTS ========== -->
-        <div class="box comments">
-            <div style="font-weight:bold; margin-bottom:10px; color:#66aacc;">// comments</div>
-            <div id="comments-container"></div>
-        </div>
+    // Learning Journey
+    const Learning = () => {
+      return (
+        <section id="learning" className="py-20 bg-[#0f1521]">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">LEARNING JOURNEY</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">How I got here</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
+            </div>
+            <div className="relative timeline-line pl-6 md:pl-8 space-y-8">
+              {learningJourney.map((item, idx) => (
+                <div key={idx} className="relative flex flex-col md:flex-row gap-4 md:gap-8">
+                  <div className="md:w-1/4">
+                    <span className="text-blue-400 font-bold">{item.year}</span>
+                  </div>
+                  <div className="md:w-3/4">
+                    <h4 className="text-xl font-display font-semibold">{item.title}</h4>
+                    <p className="text-gray-400 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
 
-        <!-- ★ UTTERANCES (Simpler, uses Issues) ★ -->
-        <script src="https://utteranc.es/client.js"
-                repo="intel200155-cpu/my-personla-app"
-                issue-term="pathname"
-                theme="github-dark"
-                crossorigin="anonymous"
-                async>
-        </script>
-    </div>
+    // Workflow
+    const Workflow = () => {
+      return (
+        <section className="py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">DEVELOPMENT WORKFLOW</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">How I build</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {workflowSteps.map((step, idx) => (
+                <div key={idx} className="bg-[#1a2233] p-6 rounded-2xl text-center card-hover">
+                  <i className={`${step.icon} text-3xl text-blue-400`}></i>
+                  <p className="text-gray-200 mt-2 text-sm font-medium">{step.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
 
-    <script>
-        // ---- Typing Effect ----
-        const phrases = [
-            'cat /dev/urandom',
-            'watching logs',
-            'breaking stuff',
-            'building something',
-            'debugging life'
-        ];
-        let idx = 0, charIdx = 0, isDeleting = false;
-        const el = document.getElementById('typing-text');
+    // UI/UX & DevOps sections (combined for brevity)
+    const Specialties = () => {
+      return (
+        <section id="ui-ux" className="py-20 bg-[#0f1521]">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-12">
+              <div>
+                <p className="text-blue-400 text-sm font-medium tracking-wider">UI/UX</p>
+                <h3 className="text-2xl font-display font-bold mt-2">Design with purpose</h3>
+                <p className="text-gray-400 mt-4 leading-relaxed">
+                  I care about how things look and feel. I study color theory, typography, and accessibility to create interfaces that are not only beautiful but also inclusive.
+                </p>
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Wireframes</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Prototyping</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Design Systems</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Accessibility</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Micro‑interactions</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700">Figma</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-blue-400 text-sm font-medium tracking-wider">DEVOPS &amp; TOOLS</p>
+                <h3 className="text-2xl font-display font-bold mt-2">From code to cloud</h3>
+                <p className="text-gray-400 mt-4 leading-relaxed">
+                  I'm familiar with the deployment pipeline: containerization, CI/CD, and hosting. I use Docker, GitHub Actions, and Vercel to ship projects reliably.
+                </p>
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700"><i className="fa-brands fa-docker"></i> Docker</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700"><i className="fa-brands fa-github"></i> GitHub Actions</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700"><i className="fa-solid fa-cloud"></i> Vercel</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700"><i className="fa-brands fa-linux"></i> Linux</span>
+                  <span className="bg-[#1a2233] px-4 py-2 rounded-full text-sm text-gray-300 border border-gray-700"><i className="fa-solid fa-code-branch"></i> CI/CD</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    };
 
-        function type() {
-            const current = phrases[idx];
-            if (isDeleting) {
-                el.textContent = current.substring(0, charIdx--);
-                if (charIdx < 0) {
-                    isDeleting = false;
-                    idx = (idx + 1) % phrases.length;
-                    setTimeout(type, 400);
-                    return;
-                }
-                setTimeout(type, 60);
-            } else {
-                el.textContent = current.substring(0, charIdx++);
-                if (charIdx > current.length) {
-                    isDeleting = true;
-                    setTimeout(type, 1500);
-                    return;
-                }
-                setTimeout(type, 100);
+    // Contact
+    const Contact = () => {
+      return (
+        <section id="contact" className="py-20">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-blue-400 text-sm font-medium tracking-wider">CONTACT</p>
+              <h2 className="text-3xl md:text-4xl font-display font-bold">Let's connect</h2>
+              <div className="w-12 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full mx-auto mt-2"></div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <p className="text-gray-300 text-lg">Have a question or a project in mind? I'd love to hear from you.</p>
+                <div className="space-y-4">
+                  <a href="#" className="flex items-center gap-4 text-gray-400 hover:text-white transition">
+                    <i className="fa-regular fa-envelope text-2xl text-blue-400 w-8 text-center"></i>
+                    hello@xrayyou8.dev
+                  </a>
+                  <a href="#" className="flex items-center gap-4 text-gray-400 hover:text-white transition">
+                    <i className="fa-brands fa-github text-2xl text-blue-400 w-8 text-center"></i>
+                    github.com/intel200155-cpu
+                  </a>
+                  <a href="#" className="flex items-center gap-4 text-gray-400 hover:text-white transition">
+                    <i className="fa-brands fa-discord text-2xl text-blue-400 w-8 text-center"></i>
+                    discord: nyxxxsm
+                  </a>
+                  <a href="#" className="flex items-center gap-4 text-gray-400 hover:text-white transition">
+                    <i className="fa-brands fa-linkedin text-2xl text-blue-400 w-8 text-center"></i>
+                    LinkedIn
+                  </a>
+                </div>
+              </div>
+              <form className="bg-[#1a2233] p-8 rounded-2xl space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">Name</label>
+                  <input type="text" className="w-full bg-[#0B0F19] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your name" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">Email</label>
+                  <input type="email" className="w-full bg-[#0B0F19] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="you@example.com" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">Message</label>
+                  <textarea rows="4" className="w-full bg-[#0B0F19] border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tell me about your project..."></textarea>
+                </div>
+                <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition transform hover:scale-[1.02]">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    // Footer
+    const Footer = () => {
+      return (
+        <footer className="py-8 border-t border-gray-800/50">
+          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2026 XRAYYOU8. Built with purpose.</p>
+            <div className="flex gap-6 mt-4 md:mt-0">
+              <a href="#projects" className="hover:text-blue-400 transition">Projects</a>
+              <a href="#github" className="hover:text-blue-400 transition">GitHub</a>
+              <a href="#contact" className="hover:text-blue-400 transition">Contact</a>
+              <a href="#learning" className="hover:text-blue-400 transition">Learning</a>
+            </div>
+          </div>
+        </footer>
+      );
+    };
+
+    // ─── APP ──────────────────────────────────────────────────
+    const App = () => {
+      // Scroll reveal observer
+      useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
             }
-        }
-        type();
+          });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+      }, []);
 
-        // ---- Animated Tab Title ----
-        let titleText = "XRAYYOU8";
-        let spinChars = "|/-\\";
-        let spinIndex = 0;
-        setInterval(() => {
-            spinIndex = (spinIndex + 1) % spinChars.length;
-            document.title = spinChars[spinIndex] + " " + titleText + " " + spinChars[spinIndex];
-        }, 200);
-    </script>
+      return (
+        <div className="bg-[#0B0F19] text-white font-sans antialiased">
+          <Navbar />
+          <Hero />
+          <div className="reveal"><About /></div>
+          <div className="reveal"><Skills /></div>
+          <div className="reveal"><TechStack /></div>
+          <div className="reveal"><Projects /></div>
+          <div className="reveal"><Learning /></div>
+          <div className="reveal"><Workflow /></div>
+          <div className="reveal"><Specialties /></div>
+          <div className="reveal"><Contact /></div>
+          <Footer />
+        </div>
+      );
+    };
 
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>
